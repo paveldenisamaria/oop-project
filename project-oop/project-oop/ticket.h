@@ -18,4 +18,28 @@ private:
     // Static counter for generating unique IDs
     static int uniqueIDCounter;// Static member to keep track of the next unique ID.
 
+
+public:
+
+    Ticket() {//default constructor
+        id = 0;
+        event = {};
+        location = {};
+        ticketType = "";
+        uniqueIDCounter = 0;
+    }
+
+    // Constructor: Initialize the Ticket object with provided values.
+    Ticket(Event event, Location location, const std::string& ticketType) :
+        event(event), location(location), ticketType(ticketType) {
+        // Generate a unique ID for the ticket.
+        id = generateUniqueID();
+    }
+
+    // Generate a unique ID
+    static long long generateUniqueID() {//cautam intr un fisier idul ult bilet emis si vom returna valoarea +1
+        //long long -> pt ca cea mai mare val este 2 la puterea 63 scazut cu 1
+        // Increment and return the static counter to generate unique IDs.
+        return ++uniqueIDCounter;
+    }
 };
