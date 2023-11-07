@@ -36,4 +36,80 @@ public:
             maxSeats += x;
         }
     }
+
+    //ID accessor methods
+    //getters - provide read access
+    int getID() {
+        return this->id;
+    }
+
+    //setters - provide write access
+    void setID(int value) {
+        //ALWAYS validate the input
+        if (value == !nullptr) {
+            this->id = value;
+        }
+        else {
+
+            throw "Wrong value";
+
+        }
+    }
+
+    //maxSeats accessor methods
+    //getters - provide read access
+    int getmaxSeats() {
+        return this->maxSeats;
+    }
+
+    //setters - provide write access
+    void setmaxSeats(int value) {
+        //ALWAYS validate the input
+        if (value == !nullptr) {
+            this->maxSeats = value;
+        }
+        else {
+
+            throw "Wrong value";
+
+        }
+    }
+
+    //numRows accessor methods
+    //getters - provide read access
+    int getnumRows() {
+        return this->numRows;
+    }
+
+    //setters - provide write access
+    void setnumRows(int value) {
+        //ALWAYS validate the input
+        if (value == !nullptr) {
+            this->numRows = value;
+        }
+        else {
+
+            throw "Wrong value";
+
+        }
+    }
+
+    //nrSeatsRow accessor methods
+    //getters - provide read access
+    std::vector<int> getnrSeatsRow() {
+        return this->nrSeatsRow;
+    }
+
+    //setters - provide write access
+    void setnrSeatsRow(const std::vector<int>& value) {
+        //ALWAYS validate the input
+        if (!value.empty()) {
+            this->nrSeatsRow = value;
+        }
+        else {
+
+            throw std::invalid_argument("Wrong value");
+
+        }
+    }
   };

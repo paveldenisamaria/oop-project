@@ -42,4 +42,68 @@ public:
         // Increment and return the static counter to generate unique IDs.
         return ++uniqueIDCounter;
     }
+
+    //ID accessor methods
+    //getters - provide read access
+    int getID() {
+        return this->id;
+    }
+
+    //setters - provide write access
+    void setID(int value) {
+        //ALWAYS validate the input
+        if (value == !nullptr) {
+            this->id = value;
+        }
+        else {
+
+            throw "Wrong value";
+
+        }
+    }
+
+    //EVENT accessor methods
+    //getters - provide read access
+    Event getevent() {
+        return this->event;
+    }
+
+    //setters - provide write access
+    void setevent(Event value) {
+        std::cout << "Event: " << this << std::endl;
+
+        
+    }
+
+    //LOCATION accessor methods
+    //getters - provide read access
+    Location getlocation() {
+        return this->location;
+    }
+
+    //setters - provide write access
+    void setlocation(Location value) {
+        std::cout << "Location: " << this << std::endl;
+    }
+
+    //TICKETTYPE accessor methods
+    //getters - provide read access
+    std::string getticketType() {
+        return this->ticketType;
+    }
+
+    //setters - provide write access
+    void setticketType(int value) {
+        //ALWAYS validate the input
+        if (value == !nullptr) {
+            this->ticketType = value;
+        }
+        else {
+
+            throw "Wrong value";
+
+        }
+    }
+
+    
 };
