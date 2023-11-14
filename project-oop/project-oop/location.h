@@ -1,5 +1,8 @@
 #pragma once
 #include "masterheader.h"
+#define MAX_LOCSIZE 1000
+#define ID_MIN 1000000
+#define MAX_NRSEATS 150000
 
 class Location {
 private:
@@ -13,20 +16,41 @@ private:
     int numRows;
 
     // Private member to store the number of seats in each row.
-    std::vector<int> nrSeatsRow;//vector dinamic in care sunt locurile pe fiecare zona
+    char nrSeatsRow[MAX_LOCSIZE];
+
+    char* namelocation;
+
+    static int NO_LOCATION;
 
 public:
 
+    static const int MIN_NAME = 2;
 
+    char* getserial() {//doar name e mobil restu sunt const
+        int l = sizeof(id);
+        int l = sizeof(maxSeats);
+        int l = sizeof(numRows);
+        l += strlen(namelocation);
+        l += strlen(nrSeatsRow);
+
+        char* bytes = new char[l + sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
+        *(int*)bytes = l;
+        strcpy_s(bytes + 4, strlen(nrSeatsRow) + 1, nrSeatsRow);
+        strcpy_s(bytes + 14, strlen(namelocation) + 1, namelocation);
+
+        return bytes;
+    }
 
     Location() {//default constructor
         id = 0;
-        nrSeatsRow = {};
+        numRows = 0;
+        namelocation = nullptr;
+        strcpy(nrSeatsRow, "");
     }
 
     // Constructor: Initialize the Location object with provided values.
-    Location(int id, const std::vector<int>& nrSeatsRow) : nrSeatsRow(nrSeatsRow), id(id) {
-        numRows = nrSeatsRow.size();//atatea randuri cate locuri sunt
+    Location(int id,int maxSeats,int numRows, const char* nrSeatsRow,const char* namelocation) :  id(id),maxSeats(maxSeats),numRows(numRows) {
+        numRows = strlen(nrSeatsRow);//atatea randuri cate locuri sunt
 
         maxSeats = 0;
 
@@ -35,6 +59,11 @@ public:
             x = nrSeatsRow[i];
             maxSeats += x;
         }
+
+        this->setnamelocation(namelocation);
+        Location::NO_LOCATION += 1;
+
+        this->setnrSeatsRow(nrSeatsRow);
     }
 
     //ID accessor methods
@@ -46,12 +75,12 @@ public:
     //setters - provide write access
     void setID(int value) {
         //ALWAYS validate the input
-        if (value == !nullptr) {
+        if (value <= ID_MIN) {
             this->id = value;
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Wrong id");
 
         }
     }
@@ -65,12 +94,12 @@ public:
     //setters - provide write access
     void setmaxSeats(int value) {
         //ALWAYS validate the input
-        if (value == !nullptr) {
+        if (value < MAX_NRSEATS) {
             this->maxSeats = value;
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Impossible nr of seats"); 
 
         }
     }
@@ -84,32 +113,67 @@ public:
     //setters - provide write access
     void setnumRows(int value) {
         //ALWAYS validate the input
-        if (value == !nullptr) {
+        if (value < MAX_LOCSIZE) {
             this->numRows = value;
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Impossible nr of rows");
 
         }
     }
 
     //nrSeatsRow accessor methods
     //getters - provide read access
-    std::vector<int> getnrSeatsRow() {
-        return this->nrSeatsRow;
+    std::string getnrSeatsRow() {
+        return string(this->nrSeatsRow);//this is the correct way
     }
 
     //setters - provide write access
-    void setnrSeatsRow(const std::vector<int>& value) {
+    void setnrSeatsRow(const char* value) {
         //ALWAYS validate the input
-        if (!value.empty()) {
-            this->nrSeatsRow = value;
+        if (value != nullptr) {
+            strcpy_s(this->nrSeatsRow, strlen(value) + 1, value);
         }
         else {
 
-            throw std::invalid_argument("Wrong value");
+            throw exception("NUll value");
 
         }
+    }
+
+    //NAME accessor methods
+    //getters - provide read access
+    std::string getnamelocation() {
+        return string(this->namelocation);
+    }
+
+    //setters - provide write access (for both situations)
+    void setnamelocation(string namelocation) {
+        this->namelocation = new char[namelocation.size() + 1];
+        strcpy_s(this->namelocation, namelocation.size() + 1, namelocation.c_str());
+
+        if (namelocation.size() <= Event::MIN_NAME) {
+            throw exception("Name of the location too short");
+        }
+
+    }
+
+    void setnamelocation(const char* namelocation) {
+        this->namelocation = new char[strlen(namelocation) + 1];
+        strcpy_s(this->namelocation, strlen(namelocation) + 1, namelocation);
+
+        if (strlen(namelocation) <= Event::MIN_NAME) {
+            throw exception("Name of the location too short");
+        }
+
+    }
+
+    ~Location() {
+        if (namelocation != nullptr) {
+            delete[] namelocation;
+        }
+        Location::NO_LOCATION -= 1;
+
     }
   };

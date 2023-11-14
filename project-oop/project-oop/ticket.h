@@ -1,5 +1,7 @@
 #pragma once
 #include "masterheader.h"
+#define MAX_TICKETTYPE 10
+#define ID_MIN 1000000
 
 class Ticket {
 private:
@@ -12,28 +14,41 @@ private:
     // Private member to store a pointer to the associated location.
     Location location;
     // Private member to store the type of the ticket.
-    std::string ticketType;
+    char ticketType[MAX_TICKETTYPE];
 
+    char* description;//medical certificate,student id card,...
 
     // Static counter for generating unique IDs
     static int uniqueIDCounter;// Static member to keep track of the next unique ID.
 
+    static int NO_TICKETS;
+
 
 public:
+
+
+    static const int MIN_DESCRIPTION = 5;
+
 
     Ticket() {//default constructor
         id = 0;
         event = {};
         location = {};
-        ticketType = "";
+        strcpy(ticketType,"");
+        description = nullptr;
         uniqueIDCounter = 0;
     }
 
     // Constructor: Initialize the Ticket object with provided values.
-    Ticket(Event event, Location location, const std::string& ticketType) :
-        event(event), location(location), ticketType(ticketType) {
+    Ticket(Event event, Location location, const char* ticketType,const char* description) :
+        event(event), location(location) {
         // Generate a unique ID for the ticket.
         id = generateUniqueID();
+
+        this->setdescription(description);
+        Ticket::NO_TICKETS += 1;
+
+        this->setticketType(ticketType);
     }
 
     // Generate a unique ID
@@ -52,12 +67,12 @@ public:
     //setters - provide write access
     void setID(int value) {
         //ALWAYS validate the input
-        if (value == !nullptr) {
+        if (value <= ID_MIN) {
             this->id = value;
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Wrong id");
 
         }
     }
@@ -69,10 +84,9 @@ public:
     }
 
     //setters - provide write access
-    void setevent(Event value) {
-        std::cout << "Event: " << this << std::endl;
+    void setevent(Event event) {
+        this->event = event;
 
-        
     }
 
     //LOCATION accessor methods
@@ -82,8 +96,8 @@ public:
     }
 
     //setters - provide write access
-    void setlocation(Location value) {
-        std::cout << "Location: " << this << std::endl;
+    void setlocation(Location location) {
+        this->location = location;
     }
 
     //TICKETTYPE accessor methods
@@ -93,16 +107,51 @@ public:
     }
 
     //setters - provide write access
-    void setticketType(int value) {
+    void setticketType(const char* value) {
         //ALWAYS validate the input
-        if (value == !nullptr) {
-            this->ticketType = value;
+        if (value != nullptr) {
+            strcpy_s(this->ticketType, strlen(value) + 1, value);
         }
         else {
 
-            throw "Wrong value";
+            throw exception("NUll value");
 
         }
+    }
+
+    //DESCRIPTION accessor methods
+    //getters - provide read access
+    std::string getdescription() {
+        return string(this->description);
+    }
+
+    //setters - provide write access (for both situations)
+    void setdescription(string description) {
+        this->description = new char[description.size() + 1];
+        strcpy_s(this->description, description.size() + 1, description.c_str());
+
+        if (description.size() <= Ticket::MIN_DESCRIPTION) {
+            throw exception("Description too short");
+        }
+
+    }
+
+    void setdescription(const char* description) {
+        this->description = new char[strlen(description) + 1];
+        strcpy_s(this->description, strlen(description) + 1, description);
+
+        if (strlen(description) <= Ticket::MIN_DESCRIPTION) {
+            throw exception("Description too short");
+        }
+
+    }
+
+    ~Ticket() {
+        if (description != nullptr) {
+            delete[] description;
+        }
+        Ticket::NO_TICKETS -= 1;
+
     }
 
     

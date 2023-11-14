@@ -1,7 +1,7 @@
 #pragma once
 #include "masterheader.h"
 
-class EventManager {
+class EventManager {//collection class
 private:
 
     // List to store issued events
@@ -40,14 +40,14 @@ public:
     }
 
     //setters - provide write access
-    void setID(int value) {
+    void setdataFileName(int value) {
         //ALWAYS validate the input
         if (value == !nullptr) {
             this->dataFileName = value;
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Wrong value");
 
         }
     }

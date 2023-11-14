@@ -2,7 +2,7 @@
 #include "masterheader.h"
 
 
-class LocationManager {
+class LocationManager {//collection class
 private:
 
     // List to store issued events
@@ -49,7 +49,7 @@ public:
         }
         else {
 
-            throw "Wrong value";
+            throw exception("Wrong value");
 
         }
     }

@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace std;
+
 //commonly used for operations in C++
 #include <iostream>
 
@@ -8,6 +10,7 @@
 
 //for strings
 #include <string>
+#include <cstring>
 
 //provides classes for file input and output
 #include <fstream>
