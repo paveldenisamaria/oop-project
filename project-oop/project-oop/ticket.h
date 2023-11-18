@@ -29,6 +29,24 @@ public:
 
     static const int MIN_DESCRIPTION = 5;
 
+    char* getserial() {//doar name e mobil restu sunt const
+        int l = sizeof(id);
+        l += sizeof(event);
+        l += sizeof(location);
+        l += strlen(ticketType);
+        l += strlen(description);
+        int l = sizeof(uniqueIDCounter);
+        int l = sizeof(NO_TICKETS);
+
+
+        char* bytes = new char[l + sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
+        *(int*)bytes = l;
+        
+        strcpy_s(bytes + 4, strlen(ticketType) + 1, ticketType);
+        strcpy_s(bytes + 14, strlen(description) + 1, description);
+
+        return bytes;
+    }
 
     Ticket() {//default constructor
         id = 0;

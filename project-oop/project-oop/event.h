@@ -26,12 +26,14 @@ public:
         l += date.size();
         l += strlen(timestart);
         l += strlen(name);
+        int l = sizeof(NO_EVENTS);
        
         char* bytes = new char [l+sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
         *(int*)bytes = l;
         strcpy_s(bytes + 4, date.size()+1, date.c_str());
         strcpy_s(bytes + 14, strlen(timestart) + 1, timestart);
         strcpy_s(bytes + 22, strlen(name) + 1, name);
+       
 
         return bytes;
     }

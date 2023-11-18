@@ -32,6 +32,7 @@ public:
         int l = sizeof(numRows);
         l += strlen(namelocation);
         l += strlen(nrSeatsRow);
+        int l = sizeof(NO_LOCATION);
 
         char* bytes = new char[l + sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
         *(int*)bytes = l;
