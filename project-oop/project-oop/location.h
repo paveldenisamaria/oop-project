@@ -26,32 +26,18 @@ public:
 
     static const int MIN_NAME = 2;
 
-    char* getserial() {//doar name e mobil restu sunt const
-        int l = sizeof(id);
-        int l = sizeof(maxSeats);
-        int l = sizeof(numRows);
-        l += strlen(namelocation);
-        l += strlen(nrSeatsRow);
-        int l = sizeof(NO_LOCATION);
-
-        char* bytes = new char[l + sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
-        *(int*)bytes = l;
-        strcpy_s(bytes + 4, strlen(nrSeatsRow) + 1, nrSeatsRow);
-        strcpy_s(bytes + 14, strlen(namelocation) + 1, namelocation);
-
-        return bytes;
-    }
+   
 
     Location() {//default constructor
         id = 0;
         numRows = 0;
         namelocation = nullptr;
-        strcpy(nrSeatsRow, "");
+        strcpy_s(nrSeatsRow, "");
     }
 
     // Constructor: Initialize the Location object with provided values.
     Location(int id,int maxSeats,int numRows, const char* nrSeatsRow,const char* namelocation) :  id(id),maxSeats(maxSeats),numRows(numRows) {
-        numRows = strlen(nrSeatsRow);//atatea randuri cate locuri sunt
+        numRows = sizeof(nrSeatsRow);//atatea randuri cate locuri sunt
 
         maxSeats = 0;
 
@@ -66,6 +52,13 @@ public:
 
         this->setnrSeatsRow(nrSeatsRow);
     }
+
+    // Copy constructor for Location
+    Location(const Location& other) : id(other.id), maxSeats(other.maxSeats), numRows(other.numRows) {
+        setnamelocation(other.namelocation);
+        setnrSeatsRow(other.nrSeatsRow);
+    }
+
 
     //ID accessor methods
     //getters - provide read access
@@ -154,7 +147,7 @@ public:
         this->namelocation = new char[namelocation.size() + 1];
         strcpy_s(this->namelocation, namelocation.size() + 1, namelocation.c_str());
 
-        if (namelocation.size() <= Event::MIN_NAME) {
+        if (namelocation.size() <= Location::MIN_NAME) {
             throw exception("Name of the location too short");
         }
 
@@ -164,7 +157,7 @@ public:
         this->namelocation = new char[strlen(namelocation) + 1];
         strcpy_s(this->namelocation, strlen(namelocation) + 1, namelocation);
 
-        if (strlen(namelocation) <= Event::MIN_NAME) {
+        if (strlen(namelocation) <= Location::MIN_NAME) {
             throw exception("Name of the location too short");
         }
 

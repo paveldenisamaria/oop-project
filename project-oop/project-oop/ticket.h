@@ -29,140 +29,113 @@ public:
 
     static const int MIN_DESCRIPTION = 5;
 
-    char* getserial() {//doar name e mobil restu sunt const
-        int l = sizeof(id);
-        l += sizeof(event);
-        l += sizeof(location);
-        l += strlen(ticketType);
-        l += strlen(description);
-        int l = sizeof(uniqueIDCounter);
-        int l = sizeof(NO_TICKETS);
-
-
-        char* bytes = new char[l + sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
-        *(int*)bytes = l;
-        
-        strcpy_s(bytes + 4, strlen(ticketType) + 1, ticketType);
-        strcpy_s(bytes + 14, strlen(description) + 1, description);
-
-        return bytes;
-    }
-
-    Ticket() {//default constructor
+   
+    //default constructor 
+    Ticket() { 
         id = 0;
-        event = {};
-        location = {};
-        strcpy(ticketType,"");
         description = nullptr;
         uniqueIDCounter = 0;
+        strcpy_s(ticketType, "");
     }
 
     // Constructor: Initialize the Ticket object with provided values.
-    Ticket(Event event, Location location, const char* ticketType,const char* description) :
-        event(event), location(location) {
-        // Generate a unique ID for the ticket.
-        id = generateUniqueID();
+    Ticket(Event event, Location location,const char* ticketType,const char* description) {
+        
 
         this->setdescription(description);
         Ticket::NO_TICKETS += 1;
 
         this->setticketType(ticketType);
+
+        
     }
 
-    // Generate a unique ID
-    static long long generateUniqueID() {//cautam intr un fisier idul ult bilet emis si vom returna valoarea +1
-        //long long -> pt ca cea mai mare val este 2 la puterea 63 scazut cu 1
-        // Increment and return the static counter to generate unique IDs.
-        return ++uniqueIDCounter;
-    }
+
 
     //ID accessor methods
-    //getters - provide read access
-    int getID() {
-        return this->id;
-    }
+            //getters - provide read access
+            int getID() {
+                return this->id;
+            }
 
-    //setters - provide write access
-    void setID(int value) {
-        //ALWAYS validate the input
-        if (value <= ID_MIN) {
-            this->id = value;
-        }
-        else {
+            //setters - provide write access
+            void setID(int value) {
+                //ALWAYS validate the input
+                if (value <= ID_MIN) {
+                    this->id = value;
+                }
+                else {
 
-            throw exception("Wrong id");
+                    throw exception("Wrong id");
 
-        }
-    }
+                }
+            }
 
-    //EVENT accessor methods
-    //getters - provide read access
-    Event getevent() {
-        return this->event;
-    }
+  /* //EVENT accessor methods
+            // Getter and setter for Event
+            Event getEvent() const {
+                return event;
+            }
 
-    //setters - provide write access
-    void setevent(Event event) {
-        this->event = event;
+            void setEvent(const Event& newEvent) {
+                event = newEvent;
+            }
 
-    }
 
     //LOCATION accessor methods
-    //getters - provide read access
-    Location getlocation() {
-        return this->location;
-    }
+            // Getter and setter for Location
+            Location getLocation() const {
+                return location;
+            }
 
-    //setters - provide write access
-    void setlocation(Location location) {
-        this->location = location;
-    }
+            void setLocation(const Location& newLocation) {
+                location = newLocation;
+            }
+*/ 
+
 
     //TICKETTYPE accessor methods
-    //getters - provide read access
-    std::string getticketType() {
-        return this->ticketType;
-    }
+            //getters - provide read access
+            std::string getticketType() const{
+                return this->ticketType;
+            }
 
-    //setters - provide write access
-    void setticketType(const char* value) {
-        //ALWAYS validate the input
-        if (value != nullptr) {
-            strcpy_s(this->ticketType, strlen(value) + 1, value);
-        }
-        else {
+            //setters - provide write access
+            void setticketType(const char* value) {
+                //ALWAYS validate the input
+                if (value == nullptr) {
+                    throw std::invalid_argument("Null value");
+                }
 
-            throw exception("NUll value");
+            }
 
-        }
-    }
 
     //DESCRIPTION accessor methods
-    //getters - provide read access
-    std::string getdescription() {
-        return string(this->description);
-    }
+            //getters - provide read access
+            std::string getdescription() {
+                return string(this->description);
+            }
 
-    //setters - provide write access (for both situations)
-    void setdescription(string description) {
-        this->description = new char[description.size() + 1];
-        strcpy_s(this->description, description.size() + 1, description.c_str());
+            //setters - provide write access (for both situations)
+            void setdescription(string description) {
+                this->description = new char[description.size() + 1];
+                strcpy_s(this->description, description.size() + 1, description.c_str());
 
-        if (description.size() <= Ticket::MIN_DESCRIPTION) {
-            throw exception("Description too short");
-        }
+                if (description.size() <= Ticket::MIN_DESCRIPTION) {
+                    throw exception("Description too short");
+                }
 
-    }
+            }
 
-    void setdescription(const char* description) {
-        this->description = new char[strlen(description) + 1];
-        strcpy_s(this->description, strlen(description) + 1, description);
+            void setdescription(const char* description) {
+                this->description = new char[strlen(description) + 1];
+                strcpy_s(this->description, strlen(description) + 1, description);
 
-        if (strlen(description) <= Ticket::MIN_DESCRIPTION) {
-            throw exception("Description too short");
-        }
+                if (strlen(description) <= Ticket::MIN_DESCRIPTION) {
+                    throw exception("Description too short");
+                }
 
-    }
+            }
 
     ~Ticket() {
         if (description != nullptr) {

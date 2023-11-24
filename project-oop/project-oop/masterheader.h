@@ -1,4 +1,4 @@
-#pragma once
+
 
 using namespace std;
 
@@ -25,6 +25,6 @@ using namespace std;
 #include <stdexcept> 
 
 // For class ticket
-#include "ticket.h"
 #include "location.h"
 #include "event.h"
+#include "ticket.h"

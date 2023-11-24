@@ -2,6 +2,7 @@
 #include "masterheader.h"
 #include <exception>
 #define MAX_TIME 9 //23:59:59 needs 8+1 characters
+#define MAX_DATE 10
 #define ID_MIN 1000000
 
 class Event {
@@ -21,23 +22,7 @@ private:
 
 public:
 
-    char* getserial() {//doar name e mobil restu sunt const
-        int l = sizeof(id);
-        l += date.size();
-        l += strlen(timestart);
-        l += strlen(name);
-        int l = sizeof(NO_EVENTS);
-       
-        char* bytes = new char [l+sizeof(int)];//un nr the bytes egal cu lungimea totala a datelor
-        *(int*)bytes = l;
-        strcpy_s(bytes + 4, date.size()+1, date.c_str());
-        strcpy_s(bytes + 14, strlen(timestart) + 1, timestart);
-        strcpy_s(bytes + 22, strlen(name) + 1, name);
-       
-
-        return bytes;
-    }
-
+   
     
     static const int MIN_NAME = 2;
     
@@ -45,7 +30,7 @@ public:
     Event() {//default constructor
         id = 0;
         date = "";
-        strcpy(timestart,"");
+        strcpy_s(timestart,"");
         name = nullptr;
     }
 
@@ -58,6 +43,12 @@ public:
 
         this->settime(timestart);
 
+    }
+
+    // Copy constructor for Event
+    Event(const Event& other) : date(other.date), id(other.id) {
+        setname(other.name);
+        settime(other.timestart);
     }
 
 

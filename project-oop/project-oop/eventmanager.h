@@ -5,7 +5,7 @@ class EventManager {//collection class
 private:
 
     // List to store issued events
-    std::vector<Event*> issuedEvent;//vector dinamic(nu incarca memoria)
+    std::vector<Event*> issuedEvent;//vector dinamic(nu incarca memoria heap)
 
     // Name of the data file for persisting event data
     std::string dataFileName;
@@ -17,6 +17,8 @@ private:
     char* charPointer;
 
 public:
+
+    
 
     EventManager() {//default constructor
         issuedEvent = {};

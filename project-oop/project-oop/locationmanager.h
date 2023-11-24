@@ -6,7 +6,7 @@ class LocationManager {//collection class
 private:
 
     // List to store issued events
-    std::vector<Location*> issuedLocation;//vector dinamic(nu incarca memoria)
+    std::vector<Location*> issuedLocation;//vector dinamic(nu incarca memoria heap)
 
     // Name of the data file for persisting event data
     std::string dataFileName;
@@ -18,6 +18,8 @@ private:
     char* charPointer;
 
 public:
+
+   
 
     LocationManager() {//default constructor
         issuedLocation = {};
