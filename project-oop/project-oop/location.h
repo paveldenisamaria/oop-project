@@ -1,8 +1,11 @@
 #pragma once
 #include "masterheader.h"
-#define MAX_LOCSIZE 1000
+#define MAX_LOCSIZE 10000
 #define ID_MIN 1000000
 #define MAX_NRSEATS 150000
+using namespace std;
+
+
 
 class Location {
 private:
@@ -22,18 +25,26 @@ private:
 
     static int NO_LOCATION;
 
+
+
 public:
+
+    // Declare the operator<< as a friend
+    friend std::ostream& operator<<(std::ostream& os, const Location& location);
+
+    //template <typename T>
+    //friend  void displayAttribute(T& attribute);
 
     static const int MIN_NAME = 2;
 
    
 
-    Location() {//default constructor
-        id = 0;
-        numRows = 0;
-        namelocation = nullptr;
+    // Default constructor for the Location class
+    Location() : id(0), maxSeats(0), numRows(0),nrSeatsRow(), namelocation(nullptr) {
+        Location::NO_LOCATION += 1;
         strcpy_s(nrSeatsRow, "");
     }
+
 
     // Constructor: Initialize the Location object with provided values.
     Location(int id,int maxSeats,int numRows, const char* nrSeatsRow,const char* namelocation) :  id(id),maxSeats(maxSeats),numRows(numRows) {
@@ -120,20 +131,16 @@ public:
     //nrSeatsRow accessor methods
     //getters - provide read access
     std::string getnrSeatsRow() {
-        return string(this->nrSeatsRow);//this is the correct way
+        return string(this->nrSeatsRow);
     }
 
     //setters - provide write access
     void setnrSeatsRow(const char* value) {
         //ALWAYS validate the input
-        if (value != nullptr) {
-            strcpy_s(this->nrSeatsRow, strlen(value) + 1, value);
-        }
-        else {
-
+        if (value == nullptr) {
             throw exception("NUll value");
-
         }
+        
     }
 
     //NAME accessor methods
@@ -170,4 +177,68 @@ public:
         Location::NO_LOCATION -= 1;
 
     }
+
+    // Generic method to display all attributes of Location
+    void displayAttributes() const {
+        displayAttribute(id);
+        displayAttribute(maxSeats);
+        displayAttribute(numRows);
+        displayAttribute(nrSeatsRow);
+        displayAttribute(namelocation);
+    }
+
+    // Generic method to process attributes of Location
+    template <typename Processor>
+    void processAttributes(Processor&& processor) {
+        processor(id);
+        processor(maxSeats);
+        processor(numRows);
+        processor(nrSeatsRow);
+        processor(namelocation);
+    }
+
+    // Copy assignment operator
+    Location& operator=(const Location& other) {
+        if (this != &other) {
+            // Copy each member from 'other' to 'this'
+            id = other.id;
+            maxSeats = other.maxSeats;
+            numRows = other.numRows;
+
+            // Copy characters from 'other.nrSeatsRow' to 'this.nrSeatsRow'
+            for (int i = 0; i < MAX_LOCSIZE; ++i) {
+                nrSeatsRow[i] = other.nrSeatsRow[i];
+            }
+
+            // Release existing memory for 'namelocation' if any
+            if (namelocation != nullptr) {
+                delete[] namelocation;
+            }
+
+            // Allocate new memory for 'namelocation' and copy the content
+            namelocation = new char[strlen(other.namelocation) + 1];
+            strcpy_s(namelocation, strlen(other.namelocation) + 1, other.namelocation);
+        }
+        return *this;
+    }
+
+    // Overloaded equality operator ==
+    bool operator==(const Location& other) const {
+        return (id == other.id) &&
+            (maxSeats == other.maxSeats) &&
+            (numRows == other.numRows) &&
+            (strcmp(nrSeatsRow, other.nrSeatsRow) == 0) &&
+            (strcmp(namelocation, other.namelocation) == 0);
+    }
+
   };
+
+  std::ostream& operator<<(std::ostream& os, const Location& location) {
+      // Implement the output logic for the Location class
+      os << "ID: " << location.id << "\n";
+      // ... output other members ...
+
+      return os;
+  }
+
+  int Location::NO_LOCATION = 0;

@@ -1,6 +1,6 @@
+#pragma once
 
 
-using namespace std;
 
 //commonly used for operations in C++
 #include <iostream>
@@ -25,6 +25,12 @@ using namespace std;
 #include <stdexcept> 
 
 // For class ticket
-#include "location.h"
 #include "event.h"
+#include "location.h"
 #include "ticket.h"
+
+
+
+
+
+

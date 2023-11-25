@@ -2,6 +2,9 @@
 #include "masterheader.h"
 #define MAX_TICKETTYPE 10
 #define ID_MIN 1000000
+using namespace std;
+
+
 
 class Ticket {
 private:
@@ -23,23 +26,28 @@ private:
 
     static int NO_TICKETS;
 
+    
 
 public:
+// Declare the operator<< as a friend
+    friend std::ostream& operator<<(std::ostream& os, const Ticket& ticket);
 
+   //template <typename T>
+   //friend  void displayAttribute( T& attribute);
 
     static const int MIN_DESCRIPTION = 5;
 
    
     //default constructor 
-    Ticket() { 
-        id = 0;
-        description = nullptr;
+    Ticket() : id(0), event(), location(), description(nullptr) ,ticketType(){
         uniqueIDCounter = 0;
         strcpy_s(ticketType, "");
+        Ticket::NO_TICKETS += 1;
     }
 
+
     // Constructor: Initialize the Ticket object with provided values.
-    Ticket(Event event, Location location,const char* ticketType,const char* description) {
+    Ticket(int id,Event event, Location location,const char* ticketType,const char* description) :id(id){
         
 
         this->setdescription(description);
@@ -145,5 +153,67 @@ public:
 
     }
 
-    
+    // Generic method to display all attributes of Ticket
+    void displayAttributes() const {
+        displayAttribute(id);
+        event.displayAttributes();
+        location.displayAttributes();
+        displayAttribute(ticketType);
+        displayAttribute(description);
+    }
+
+    // Generic method to process attributes of Ticket
+    template <typename Processor>
+    void processAttributes(Processor&& processor) {
+        processor(id);
+        event.processAttributes(processor);
+        location.processAttributes(processor);
+        processor(ticketType);
+        processor(description);
+    }
+
+    // Copy assignment operator
+    Ticket& operator=(const Ticket& other) {
+        if (this != &other) {
+            // Copy each member from 'other' to 'this'
+            id = other.id;
+
+            // Copy characters from 'other.ticketType' to 'this.ticketType'
+            for (int i = 0; i < MAX_TICKETTYPE; ++i) {
+                ticketType[i] = other.ticketType[i];
+            }
+
+            // Release existing memory for 'description' if any
+            if (description != nullptr) {
+                delete[] description;
+            }
+
+            // Allocate new memory for 'description' and copy the content
+            description = new char[strlen(other.description) + 1];
+            strcpy_s(description, strlen(other.description) + 1, other.description);
+
+            // Copy 'event' and 'location'
+            event = other.event;
+            location = other.location;
+        }
+        return *this;
+    }
+
+    bool operator==(const Ticket& other) const {
+        return (id == other.id) &&
+            (event == other.event) &&
+            (location == other.location) &&
+            (strcmp(ticketType, other.ticketType) == 0) &&
+            (strcmp(description, other.description) == 0);
+    }
 };
+
+std::ostream& operator<<(std::ostream& os, const Ticket& ticket) {
+    // Implement the output logic for the Ticket class
+    os << "ID: " << ticket.id << "\n";
+    // ... output other members ...
+
+    return os;
+}
+
+int Ticket::NO_TICKETS = 0;

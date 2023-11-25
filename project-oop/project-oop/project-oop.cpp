@@ -1,5 +1,10 @@
 
 #include "masterheader.h"
+using namespace std;
+
+// Generic function to display an attribute
+
+
 
 int main() {
 
@@ -23,74 +28,92 @@ int main() {
                 // Add Event
                 std::string date, timestart, name;
                 int id;
-                std::cout << "Enter date: ";
+                std::cout << "\nEnter date: ";
                 std::cin >> date;
-                std::cout << "Enter start time: ";
+                std::cout << "\nEnter start time: ";
                 std::cin >> timestart;
-                std::cout << "Enter event name: ";
+                std::cout << "\nEnter event name: ";
                 std::cin >> name;
-                std::cout << "Enter event ID: ";
+                std::cout << "\nEnter event ID: ";
                 std::cin >> id;
 
                 Event newEvent(date, timestart.c_str(), name.c_str(), id);
                 events.push_back(newEvent);
+                events.back().displayAttributes();
+                events.back().processAttributes([](const auto& attribute) {
+                    // Custom processing logic for Event attributes
+                    // For example, you can perform operations on each attribute
+                    // ...
+                    });
                 break;
+
+
             }
             case 2: {
                 // Add Location
                 int id, maxSeats, numRows;
                 char nrSeatsRow[MAX_LOCSIZE];
                 char namelocation[MAX_LOCSIZE];
-                std::cout << "Enter location ID: ";
+                std::cout << "\nEnter location ID: ";
                 std::cin >> id;
-                std::cout << "Enter maximum seats: ";
+                std::cout << "\nEnter maximum seats: ";
                 std::cin >> maxSeats;
-                std::cout << "Enter number of rows: ";
+                std::cout << "\nEnter number of rows: ";
                 std::cin >> numRows;
-                std::cout << "Enter seats per row (e.g., 321): ";
+                std::cout << "\nEnter seats per row (e.g., 321): ";
                 std::cin >> nrSeatsRow;
-                std::cout << "Enter location name: ";
+                std::cout << "\nEnter location name: ";
                 std::cin >> namelocation;
 
                 Location newLocation(id, maxSeats, numRows, nrSeatsRow, namelocation);
                 locations.push_back(newLocation);
+                locations.back().displayAttributes();
+                locations.back().processAttributes([](const auto& attribute) {
+                    // Custom processing logic for Location attributes
+                    // ...
+                    });
                 break;
             }
             case 3: {
                 // Generate Ticket
                 int eventIndex, locationIndex;
                 std::string ticketType, description;
-                std::cout << "Enter index of the event: ";
+                std::cout << "\nEnter index of the event: ";
                 std::cin >> eventIndex;
-                std::cout << "Enter index of the location: ";
+                std::cout << "\nEnter index of the location: ";
                 std::cin >> locationIndex;
-                std::cout << "Enter ticket type: ";
+                std::cout << "\nEnter ticket type: ";
                 std::cin >> ticketType;
-                std::cout << "Enter ticket description: ";
+                std::cout << "\nEnter ticket description: ";
                 std::cin >> description;
 
                 if (eventIndex >= 0 && eventIndex < events.size() &&
                     locationIndex >= 0 && locationIndex < locations.size()) {
-                    Ticket newTicket(events[eventIndex], locations[locationIndex], ticketType.c_str(), description.c_str());
+                    Ticket newTicket(ID_MIN+eventIndex,events[eventIndex], locations[locationIndex], ticketType.c_str(), description.c_str());
                     tickets.push_back(newTicket);
                 }
                 else {
-                    std::cout << "Invalid event or location index.\n";
+                    std::cout << "\nInvalid event or location index.\n";
                 }
+                tickets.back().displayAttributes();
+                tickets.back().processAttributes([](const auto& attribute) {
+                    // Custom processing logic for Ticket attributes
+                    // ...
+                    });
                 break;
             }
             case 4: {
                 // Validate Ticket
                 int ticketIndex;
-                std::cout << "Enter index of the ticket: ";
+                std::cout << "\nEnter index of the ticket: ";
                 std::cin >> ticketIndex;
 
                 if (ticketIndex >= 0 && ticketIndex < tickets.size()) {
                     // Implement validation logic here
-                    std::cout << "Ticket validated!\n";
+                    std::cout << "\nTicket validated!\n";
                 }
                 else {
-                    std::cout << "Invalid ticket index.\n";
+                    std::cout << "\nInvalid ticket index.\n";
                 }
                 break;
             }
@@ -99,7 +122,7 @@ int main() {
                 break;
             }
             default:
-                std::cout << "Invalid choice. Please try again.\n";
+                std::cout << "\nInvalid choice. Please try again.\n";
             }
 
         } while (choice != 5);

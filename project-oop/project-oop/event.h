@@ -4,6 +4,53 @@
 #define MAX_TIME 9 //23:59:59 needs 8+1 characters
 #define MAX_DATE 10
 #define ID_MIN 1000000
+using namespace std;
+
+/* Generic function to display an attribute
+
+template <typename T>
+void displayAttribute(T& attribute) {
+    cout << attribute << endl;
+}
+*/
+
+// Function to display an attribute of type int
+void displayAttribute(int attribute) {
+    std::cout << attribute << std::endl;
+}
+
+// Function to display an attribute of type std::string
+void displayAttribute(const std::string& attribute) {
+    std::cout << attribute << std::endl;
+}
+
+// Function to display an attribute of type const char*
+void displayAttribute(const char* attribute) {
+    std::cout << attribute << std::endl;
+}
+
+// Function to process an attribute of type int
+void processAttribute(int attribute) {
+    // Custom processing logic for int attribute
+    // For example, you can perform operations on the attribute
+    std::cout << "Processing int attribute: " << attribute << std::endl;
+}
+
+// Function to process an attribute of type std::string
+void processAttribute(const std::string& attribute) {
+    // Custom processing logic for std::string attribute
+    // For example, you can perform operations on the attribute
+    std::cout << "Processing string attribute: " << attribute << std::endl;
+}
+
+// Function to process an attribute of type const char*
+void processAttribute(const char* attribute) {
+    // Custom processing logic for const char* attribute
+    // For example, you can perform operations on the attribute
+    std::cout << "Processing const char* attribute: " << attribute << std::endl;
+}
+
+
 
 class Event {
 private:
@@ -19,10 +66,17 @@ private:
 
     static int NO_EVENTS;
     
+    
+
 
 public:
 
-   
+   // Declare the operator<< as a friend
+    friend std::ostream& operator<<(std::ostream& os, const Event& event);
+
+
+   //template <typename T>
+   //friend  void displayAttribute( T& attribute);
     
     static const int MIN_NAME = 2;
     
@@ -136,4 +190,57 @@ public:
         Event::NO_EVENTS -= 1;
 
     }
+
+    //Generic method to display all attributes of Event
+    void displayAttributes() const {
+        displayAttribute(id);
+        displayAttribute(date);
+        displayAttribute(timestart);
+        displayAttribute(name);
+    }
+    
+
+    // Generic method to process attributes of Event
+    template <typename Processor>
+    void processAttributes(Processor&& processor) {
+        processor(id);
+        processor(date);
+        processor(timestart);
+        processor(name);
+    }
+
+    // Copy assignment operator
+    Event& operator=(const Event& other) {
+        if (this != &other) {
+            // Copy each member from 'other' to 'this'
+            id = other.id;
+            date = other.date;
+            strcpy_s(timestart, other.timestart);
+
+            // Release existing memory for 'name' if any
+            if (name != nullptr) {
+                delete[] name;
+            }
+
+            // Allocate new memory for 'name' and copy the content
+            name = new char[strlen(other.name) + 1];
+            strcpy_s(name, strlen(other.name) + 1, other.name);
+        }
+        return *this;
+    }
+
+    bool operator==(const Event& other) const {
+        return (id == other.id) &&
+            (date == other.date) &&
+            (strcmp(timestart, other.timestart) == 0) &&
+            (strcmp(name, other.name) == 0);
+    }
 };
+
+// Outside the Event class definition
+std::ostream& operator<<(std::ostream& os, const Event& event) {
+    os << "Event ID: " << event.id << ", Date: " << event.date << ", Time: " << event.timestart << ", Name: " << event.name;
+    return os;
+}
+
+int Event::NO_EVENTS = 0;
