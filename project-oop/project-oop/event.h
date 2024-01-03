@@ -3,6 +3,7 @@
 #include <exception>
 #define MAX_TIME 9 //23:59:59 needs 8+1 characters
 #define MAX_DATE 10
+#define MAX_NAME 100
 #define ID_MIN 1000000
 using namespace std;
 
@@ -74,9 +75,11 @@ public:
    // Declare the operator<< as a friend
     friend std::ostream& operator<<(std::ostream& os, const Event& event);
 
-
+    
    //template <typename T>
    //friend  void displayAttribute( T& attribute);
+
+    friend std::ifstream& operator>>(std::ifstream& file, Event& event);
     
     static const int MIN_NAME = 2;
     
@@ -235,12 +238,80 @@ public:
             (strcmp(timestart, other.timestart) == 0) &&
             (strcmp(name, other.name) == 0);
     }
+
+
+    std::string getdate() const;
+    std::string gettime() const;
+    int getID() const;
+    std::string getname() const;
+
+    void readFromFile(std::ifstream& file);
+    void writeToFile(std::ofstream& file) const;
 };
+
+std::string Event::getdate() const {
+    return date;
+}
+
+std::string Event::gettime() const {
+    return std::string(timestart);
+}
+
+int Event::getID() const {
+    return id;
+}
+
+std::string Event::getname() const {
+    return std::string(name);
+}
+
+void Event::readFromFile(std::ifstream& file) {
+    if (!file.is_open()) {
+        std::cerr << "Error: File is not open." << std::endl;
+        return;
+    }
+
+    // Read and assign values from the file
+    std::string dateString, timeString, name;
+    int id;
+
+    if (file >> id >> dateString >> timeString >> name) {
+        // Assuming date, time, and name are separated by whitespace
+        date = dateString;
+        settime(timeString.c_str());
+        setname(name);
+        setID(id);
+    }
+    else {
+        std::cerr << "Error: Failed to read Event data from the file." << std::endl;
+    }
+}
+
+void Event::writeToFile(std::ofstream& file) const {
+    if (!file.is_open()) {
+        std::cerr << "Error: File is not open." << std::endl;
+        return;
+    }
+
+    // Write Event data to the file
+    file << getID() << " " << getdate() << " " << gettime() << " " << getname() << "\n";
+
+}
 
 // Outside the Event class definition
 std::ostream& operator<<(std::ostream& os, const Event& event) {
     os << "Event ID: " << event.id << ", Date: " << event.date << ", Time: " << event.timestart << ", Name: " << event.name;
     return os;
 }
+
+
+std::istream& operator>>(std::istream& is, Event& event) {
+    // Read and assign values from the input stream
+    std::string dateString, timeString, name;
+    int id;
+    return is;
+}
+
+
 
 int Event::NO_EVENTS = 0;

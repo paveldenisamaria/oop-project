@@ -31,9 +31,13 @@ private:
 public:
 // Declare the operator<< as a friend
     friend std::ostream& operator<<(std::ostream& os, const Ticket& ticket);
-
    //template <typename T>
    //friend  void displayAttribute( T& attribute);
+
+    friend std::ifstream& operator>>(std::ifstream& file, Location& location);
+
+
+
 
     static const int MIN_DESCRIPTION = 5;
 
@@ -47,15 +51,10 @@ public:
 
 
     // Constructor: Initialize the Ticket object with provided values.
-    Ticket(int id,Event event, Location location,const char* ticketType,const char* description) :id(id){
-        
-
+    Ticket(int id, const Event& event, const Location& location, const char* ticketType, const char* description) : id(id), event(event), location(location) {
         this->setdescription(description);
-        Ticket::NO_TICKETS += 1;
-
         this->setticketType(ticketType);
-
-        
+        Ticket::NO_TICKETS += 1;
     }
 
 
@@ -206,11 +205,74 @@ public:
             (strcmp(ticketType, other.ticketType) == 0) &&
             (strcmp(description, other.description) == 0);
     }
+
+
+    void readFromFile(std::ifstream& file);
+    void writeToFile(std::ofstream& file) const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Ticket& ticket) {
-    // Implement the output logic for the Ticket class
-    os << "ID: " << ticket.id << "\n";
+void Ticket::readFromFile(std::ifstream& file) {
+    if (!file.is_open()) {
+        std::cerr << "Error: File is not open." << std::endl;
+        return;
+    }
+
+    // Read and assign values from the file
+    file >> id;
+
+    // Read the event data
+    std::string eventDate, eventTime, eventName;
+    file >> eventDate >> eventTime;
+    file.ignore(); // Consume the space after eventTime
+    std::getline(file, eventName);
+
+    // Set the event attributes
+    event.setdate(eventDate);
+    event.settime(eventTime.c_str());
+    event.setname(eventName.c_str());
+
+    // Read the location data
+    file >> location;
+
+    // Read ticketType and description
+    file >> ticketType;
+    char buffer[256];  // Adjust the size based on your needs
+    file.getline(buffer, 256);  // Consume the newline character
+    file.getline(buffer, 256);  // Read the description
+    setdescription(buffer);
+}
+
+
+void Ticket::writeToFile(std::ofstream& file) const {
+    file << id << ' ' << event << ' ' << location << ' ' << ticketType << '\n';
+    file << description << '\n';
+}
+
+std::ifstream& operator>>(std::ifstream& file, Location& location) {
+    if (!file.is_open()) {
+        std::cerr << "Error: File is not open." << std::endl;
+        return file;
+    }
+
+    // Read and assign values from the file
+    file >> location.id >> location.maxSeats >> location.numRows;
+
+    // Read nrSeatsRow
+    for (int i = 0; i < location.numRows; ++i) {
+        file >> location.nrSeatsRow[i];
+    }
+
+    char buffer[MAX_LOCSIZE];
+    file.ignore();  // Consume the newline character after numRows
+    file.getline(buffer, MAX_LOCSIZE);  // Read the location name
+    location.setnamelocation(buffer);
+
+    return file;
+}
+
+std::ostream& operator<<(std::ostream& os, const Location& location) {
+    // Implement the output logic for the Location class
+    os << "ID: " << location.id << "\n";
     // ... output other members ...
 
     return os;

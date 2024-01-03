@@ -35,6 +35,8 @@ public:
     //template <typename T>
     //friend  void displayAttribute(T& attribute);
 
+    friend std::ifstream& operator>>(std::ifstream& file, Location& location);
+
     static const int MIN_NAME = 2;
 
    
@@ -47,21 +49,10 @@ public:
 
 
     // Constructor: Initialize the Location object with provided values.
-    Location(int id,int maxSeats,int numRows, const char* nrSeatsRow,const char* namelocation) :  id(id),maxSeats(maxSeats),numRows(numRows) {
-        numRows = sizeof(nrSeatsRow);//atatea randuri cate locuri sunt
-
-        maxSeats = 0;
-
-        int x;
-        for (int i = 0; i < numRows; i++) {//x ia pe rand val din vector 
-            x = nrSeatsRow[i];
-            maxSeats += x;
-        }
-
+    Location(int id, int maxSeats, int numRows, const char* nrSeatsRow, const char* namelocation) : id(id), maxSeats(maxSeats), numRows(numRows) {
         this->setnamelocation(namelocation);
-        Location::NO_LOCATION += 1;
-
         this->setnrSeatsRow(nrSeatsRow);
+        Location::NO_LOCATION += 1;
     }
 
     // Copy constructor for Location
@@ -231,7 +222,38 @@ public:
             (strcmp(namelocation, other.namelocation) == 0);
     }
 
-  };
+
+    void readFromFile(std::ifstream& file);
+    void writeToFile(std::ofstream& file) const;
+};
+
+void Location::readFromFile(std::ifstream& file) {
+    file >> id >> maxSeats >> numRows;
+    file.ignore(); // Consume the newline character after numRows
+
+    // Read nrSeatsRow
+    for (int i = 0; i < numRows; ++i) {
+        file >> nrSeatsRow[i];
+    }
+
+    char buffer[MAX_LOCSIZE];
+    file.getline(buffer, MAX_LOCSIZE);  // Consume the newline character
+    file.getline(buffer, MAX_LOCSIZE);  // Read the name
+    setnamelocation(buffer);
+}
+
+void Location::writeToFile(std::ofstream& file) const {
+    file << id << ' ' << maxSeats << ' ' << numRows << '\n';
+
+    // Write nrSeatsRow
+    for (int i = 0; i < numRows; ++i) {
+        file << nrSeatsRow[i] << ' ';
+    }
+    file << '\n';
+
+    file << namelocation << '\n';
+
+  }
 
   std::ostream& operator<<(std::ostream& os, const Location& location) {
       // Implement the output logic for the Location class
@@ -240,5 +262,15 @@ public:
 
       return os;
   }
+
+  std::istream& operator>>(std::istream& is, Location& location) {
+      // Read and assign values from the input stream
+      int id, maxSeats, numRows, nrSeatsRow;
+      char* locationName = nullptr;
+
+     
+      return is;
+  }
+
 
   int Location::NO_LOCATION = 0;
